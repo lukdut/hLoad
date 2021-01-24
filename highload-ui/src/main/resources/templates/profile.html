@@ -2,12 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:text="${user.name + ' '}">Вася </title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="https://bootswatch.com/4/flatly/bootstrap.min.css">
 </head>
 <body>
 
 <h1 th:text="${user.name + ' ' + (user.lastName==null?'':user.lastName)}">Вася Пупкович</h1>
+<div th:text="${ (user.gender==null?'n/a':user.gender)}">Пол: мужской</div>
 
 </body>
 </html>

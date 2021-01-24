@@ -10,8 +10,28 @@
 <form action="/register" method="post">
     <input type="hidden" th:field="${user.id}"/>
     <div>
-        <label for="title">Name</label>
-        <input type="text" id="title" th:field="${user.name}"/>
+        <label for="name">Name</label>
+        <input type="text" id="name" th:field="${user.name}"/>
+    </div>
+    <div>
+        <label for="lName">Last name</label>
+        <input type="text" id="lName" th:field="${user.lastName}"/>
+    </div>
+    <div>
+        <label for="gender">Gender</label>
+        <select th:field="${user.gender}" id="gender">
+            <option th:value= null>-</option>
+            <option th:value="MALE" th:text="Male"></option>
+            <option th:value="FEMALE" th:text="Female"></option>
+        </select>
+    </div>
+
+    <div>
+        <label for="city">City</label>
+        <select th:field="${user.cityId}" id="city">
+            <option th:each="city: ${cities}" th:value="${city.id}" th:text="${city.name}">
+            </option>
+        </select>
     </div>
     <button type="submit" th:action="@{/register}">Save</button>
 </form>

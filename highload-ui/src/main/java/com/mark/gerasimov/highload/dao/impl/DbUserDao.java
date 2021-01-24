@@ -73,10 +73,10 @@ public class DbUserDao implements UserDao {
         parameters.addValue("name", user.getName());
         parameters.addValue("lastName", user.getLastName());
         parameters.addValue("city_id", user.getCityId() == null ? null : user.getCityId().toString());
-        parameters.addValue("gender", user.getGender());
+        parameters.addValue("gender", user.getGender() == null ? null : user.getGender().toString());
 
         if (isNew) {
-            jdbcTemplate.update("INSERT INTO users VALUES (:id, :name, :lastName, :city_id, :birthday, :gender)", parameters);
+            jdbcTemplate.update("INSERT INTO users (id, name, last_name, city_id, birthday, gender) VALUES (:id, :name, :lastName, :city_id, :birthday, :gender)", parameters);
         } else {
             jdbcTemplate.update("UPDATE users set name=:name, lastName=:lastName, city_id=:city_id, birthday=:birthday, gender=:gender where id=:id", parameters);
         }
