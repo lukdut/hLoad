@@ -42,7 +42,10 @@ public class ProfileController {
     public String profile(Model model, @PathVariable String id) {
         final Optional<User> userProfile = userDao.findById(UUID.fromString(id));
         if (userProfile.isPresent()) {
-            model.addAttribute("user", userProfile.get());
+            final User user = userProfile.get();
+            model.addAttribute("user", user);
+            model.addAttribute("city", citiesDao.findById(user.getCityId()));
+            model.addAttribute("interests", userInterestsDao.findAllByUserId(user.getId()));
             return "profile";
         } else {
             return "404";

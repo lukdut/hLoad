@@ -1,10 +1,13 @@
 package com.mark.gerasimov.highload.dao.impl;
 
 import com.mark.gerasimov.highload.dao.UserInterestsDao;
+import com.mark.gerasimov.highload.model.Interest;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,5 +29,20 @@ public class DbUserInterestsDao implements UserInterestsDao {
         }).toArray(MapSqlParameterSource[]::new);
 
         jdbcTemplate.batchUpdate("insert into user_interests (user_id, interest_id) values (:uId, :iId)", parameterSources);
+    }
+
+    @Override
+    public List<Interest> findAllByUserId(UUID userId) {
+        return jdbcTemplate.query("select interests.id as id, interests.name as name from users\n" +
+                "left join user_interests on user_interests.user_id = users.id\n" +
+                "left join interests on interests.id = user_interests.interest_id\n" +
+                "where users.id=:uId", new MapSqlParameterSource("uId", userId.toString()), this::rowMapper);
+    }
+
+    private Interest rowMapper(ResultSet resultSet, int i) throws SQLException {
+        final Interest interest = new Interest();
+        interest.setName(resultSet.getString("name"));
+        interest.setId(UUID.fromString(resultSet.getString("id")));
+        return interest;
     }
 }

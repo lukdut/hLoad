@@ -38,9 +38,7 @@ public class DbUserDao implements UserDao {
 
                     final Date birthday = resultSet.getDate("birthday");
                     if (birthday != null) {
-                        user.setBirthDay(birthday.toInstant()
-                                .atZone(ZoneId.systemDefault())
-                                .toLocalDate());
+                        user.setBirthDay(birthday.toLocalDate());
                     }
                     user.setId(UUID.fromString(resultSet.getString("id")));
 
