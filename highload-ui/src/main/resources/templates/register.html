@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create profile</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://bootswatch.com/4/flatly/bootstrap.min.css">
+</head>
+<body>
+
+<form action="/register" method="post">
+    <input type="hidden" th:field="${user.id}"/>
+    <div>
+        <label for="title">Name</label>
+        <input type="text" id="title" th:field="${user.name}"/>
+    </div>
+    <button type="submit" th:action="@{/register}">Save</button>
+</form>
+
+</body>
+</html>
