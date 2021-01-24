@@ -4,6 +4,7 @@ package com.mark.gerasimov.highload.controller;
 import com.mark.gerasimov.highload.dao.CitiesDao;
 import com.mark.gerasimov.highload.dao.InterestsDao;
 import com.mark.gerasimov.highload.dao.UserDao;
+import com.mark.gerasimov.highload.dao.UserInterestsDao;
 import com.mark.gerasimov.highload.model.Gender;
 import com.mark.gerasimov.highload.model.User;
 import org.springframework.stereotype.Controller;
@@ -11,7 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,14 +24,17 @@ public class ProfileController {
     private final UserDao userDao;
     private final CitiesDao citiesDao;
     private final InterestsDao interestsDao;
+    private final UserInterestsDao userInterestsDao;
 
     public ProfileController(
             UserDao userDao,
             CitiesDao citiesDao,
-            InterestsDao interestsDao) {
+            InterestsDao interestsDao,
+            UserInterestsDao userInterestsDao) {
         this.userDao = userDao;
         this.citiesDao = citiesDao;
         this.interestsDao = interestsDao;
+        this.userInterestsDao = userInterestsDao;
     }
 
 
@@ -49,17 +55,23 @@ public class ProfileController {
         model.addAttribute("cities", citiesDao.findAll());
         model.addAttribute("cityId", null);
         model.addAttribute("interests", interestsDao.findAll());
-        model.addAttribute("interestId", null);
         model.addAttribute("gender", "");
         return "register";
     }
 
     @PostMapping("/register")
-    public String register(Model model, User user) {
+    public String register(Model model, User user, @RequestParam(value = "interestsId", required = false) UUID[] interestsId) {
         final String gender = (String) model.getAttribute("gender");
-        if(gender!=null && !gender.isEmpty()){
+        if (gender != null && !gender.isEmpty()) {
             user.setGender(Gender.valueOf(gender));
         }
-        return "redirect:/u/" + userDao.save(user).getId();
+
+        final UUID userId = userDao.save(user).getId();
+
+        if (interestsId != null && interestsId.length > 0) {
+            userInterestsDao.saveUserInterests(userId, Arrays.asList(interestsId));
+        }
+
+        return "redirect:/u/" + userId;
     }
 }

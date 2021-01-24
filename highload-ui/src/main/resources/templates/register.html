@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Create profile</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="https://bootswatch.com/4/flatly/bootstrap.min.css">
 </head>
 <body>
@@ -20,7 +20,7 @@
     <div>
         <label for="gender">Gender</label>
         <select th:field="${user.gender}" id="gender">
-            <option th:value= null>-</option>
+            <option th:value=null>-</option>
             <option th:value="MALE" th:text="Male"></option>
             <option th:value="FEMALE" th:text="Female"></option>
         </select>
@@ -33,6 +33,19 @@
             </option>
         </select>
     </div>
+
+    <div>
+        <label for="interestsList">Interests</label>
+        <ul id="interestsList">
+            <th:block th:each="interest : ${interests}">
+                <li>
+                    <input type="checkbox" name="interestsId" th:value="${interest.id}"/>
+                    <label th:text="${interest.name}">Интерес</label>
+                </li>
+            </th:block>
+        </ul>
+    </div>
+
     <button type="submit" th:action="@{/register}">Save</button>
 </form>
 
