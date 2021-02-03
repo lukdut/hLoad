@@ -34,8 +34,8 @@ public class DbUserInterestsDao implements UserInterestsDao {
     @Override
     public List<Interest> findAllByUserId(UUID userId) {
         return jdbcTemplate.query("select interests.id as id, interests.name as name from users\n" +
-                "left join user_interests on user_interests.user_id = users.id\n" +
-                "left join interests on interests.id = user_interests.interest_id\n" +
+                "inner join user_interests on user_interests.user_id = users.id\n" +
+                "inner join interests on interests.id = user_interests.interest_id\n" +
                 "where users.id=:uId", new MapSqlParameterSource("uId", userId.toString()), this::rowMapper);
     }
 
