@@ -1,4 +1,4 @@
-package com.mark.gerasimov.highload;
+package com.mark.gerasimov.highload.security;
 
 import com.mark.gerasimov.highload.controller.SuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +15,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("1").password(passwordEncoder().encode("2"))
-                .authorities("ROLE_USER");
-    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

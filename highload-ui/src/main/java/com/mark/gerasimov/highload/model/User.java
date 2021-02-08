@@ -1,15 +1,18 @@
 package com.mark.gerasimov.highload.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public class User {
+public class User implements Serializable {
     private UUID id;
 
     private String name;
     private String lastName;
     private LocalDate birthDay;
     private Gender gender;
+
+    private String password;
 
     private UUID cityId;
 
@@ -59,5 +62,13 @@ public class User {
 
     public void setCityId(UUID cityId) {
         this.cityId = cityId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

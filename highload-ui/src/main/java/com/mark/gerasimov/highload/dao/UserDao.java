@@ -9,4 +9,6 @@ public interface UserDao {
     Optional<User> findById(UUID id);
 
     User save(User user);
+
+    Optional<User> findByName(String name);
 }

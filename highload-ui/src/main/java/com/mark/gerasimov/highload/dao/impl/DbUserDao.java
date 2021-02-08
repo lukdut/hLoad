@@ -8,6 +8,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
@@ -25,30 +27,7 @@ public class DbUserDao implements UserDao {
     @Override
     public Optional<User> findById(UUID id) {
         final List<User> allFoundUsers = jdbcTemplate.query("Select * from users where id =:id",
-                new MapSqlParameterSource("id", id.toString()),
-                (resultSet, i) -> {
-                    User user = new User();
-
-                    user.setName(resultSet.getString("name"));
-
-                    user.setLastName(resultSet.getString("last_name"));
-
-                    final String genderString = resultSet.getString("gender");
-                    user.setGender(genderString == null ? null : Gender.valueOf(genderString));
-
-                    final Date birthday = resultSet.getDate("birthday");
-                    if (birthday != null) {
-                        user.setBirthDay(birthday.toLocalDate());
-                    }
-                    user.setId(UUID.fromString(resultSet.getString("id")));
-
-                    final String cityId = resultSet.getString("city_id");
-                    if (cityId != null) {
-                        user.setCityId(UUID.fromString(cityId));
-                    }
-
-                    return user;
-                });
+                new MapSqlParameterSource("id", id.toString()), this::getUserRowMapper);
 
         return allFoundUsers.isEmpty() ? Optional.empty() : Optional.of(allFoundUsers.get(0));
     }
@@ -77,6 +56,39 @@ public class DbUserDao implements UserDao {
             jdbcTemplate.update("INSERT INTO users (id, name, last_name, city_id, birthday, gender) VALUES (:id, :name, :lastName, :city_id, :birthday, :gender)", parameters);
         } else {
             jdbcTemplate.update("UPDATE users set name=:name, lastName=:lastName, city_id=:city_id, birthday=:birthday, gender=:gender where id=:id", parameters);
+        }
+
+        return user;
+    }
+
+    @Override
+    public Optional<User> findByName(String name) {
+        final User user = jdbcTemplate.queryForObject("Select * from users where name=:name",
+                new MapSqlParameterSource("name", name), this::getUserRowMapper);
+        return Optional.ofNullable(user);
+    }
+
+
+    private User getUserRowMapper(ResultSet resultSet, int i) throws SQLException {
+        User user = new User();
+
+        user.setName(resultSet.getString("name"));
+        user.setPassword(resultSet.getString("password"));
+
+        user.setLastName(resultSet.getString("last_name"));
+
+        final String genderString = resultSet.getString("gender");
+        user.setGender(genderString == null ? null : Gender.valueOf(genderString));
+
+        final Date birthday = resultSet.getDate("birthday");
+        if (birthday != null) {
+            user.setBirthDay(birthday.toLocalDate());
+        }
+        user.setId(UUID.fromString(resultSet.getString("id")));
+
+        final String cityId = resultSet.getString("city_id");
+        if (cityId != null) {
+            user.setCityId(UUID.fromString(cityId));
         }
 
         return user;
